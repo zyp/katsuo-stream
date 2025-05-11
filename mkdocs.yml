@@ -1,0 +1,37 @@
+site_name: katsuo-stream
+repo_url: https://github.com/zyp/katsuo-stream
+repo_name: zyp/katsuo-stream
+watch: [katsuo]
+
+nav:
+- Overview:
+  - index.md
+  - Packetized streams: packet.md
+- API Reference:
+  - api/index.md
+  - packet: api/packet.md
+  - components: api/components.md
+  - wrappers: api/wrappers.md
+  - sim: api/sim.md
+
+theme:
+  name: material
+  features:
+  - navigation.tabs
+  - navigation.indexes
+
+plugins:
+- mkdocstrings:
+    default_handler: python
+    handlers:
+      python:
+        inventories:
+          - https://amaranth-lang.org/docs/amaranth/latest/objects.inv
+
+markdown_extensions:
+- markdown_wavedrom
+
+extra_javascript:
+- https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/wavedrom.min.js
+- https://cdnjs.cloudflare.com/ajax/libs/wavedrom/3.5.0/skins/default.js
+- js/wavedrom_loader.js

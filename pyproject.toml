@@ -1,0 +1,35 @@
+[project]
+name = "katsuo-stream"
+description = "Stream components for Amaranth"
+readme = "README.md"
+authors = [
+    {name = "Vegard Storheil Eriksen", email = "zyp@jvnv.net"},
+]
+license = {text = "MIT"}
+dependencies = [
+    "amaranth >= 0.5",
+]
+requires-python = ">=3.10"
+dynamic = ["version"]
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.version]
+source = "scm"
+
+[tool.pdm.scripts]
+test.cmd = "pytest tests/"
+docs.cmd = "mkdocs build"
+docs-live.cmd = "mkdocs serve"
+
+[dependency-groups]
+test = [
+    "pytest>=8.3.5",
+]
+docs = [
+    "mkdocs-material>=9.6.12",
+    "mkdocstrings[python]>=0.29.1",
+    "markdown-wavedrom>=1.0.0",
+]
