@@ -12,6 +12,7 @@ class Packet(data.StructLayout):
 
     Args:
         data_shape: Shape of a data token.
+        header_shape: Shape of the optional header field.
         semantics: Semantics of the packetized data stream.
     '''
 
@@ -45,13 +46,15 @@ class Packet(data.StructLayout):
             '''True if the semantics includes an `end` field.'''
             return self in {self.END, self.FIRST_END}
 
-    def __init__(self, data_shape: ShapeLike = 8, *, semantics: Semantics = Semantics.LAST):
+    def __init__(self, data_shape: ShapeLike = 8, *, header_shape: ShapeLike | None = None, semantics: Semantics = Semantics.LAST):
         if not isinstance(semantics, self.Semantics):
             raise TypeError(f'semantics must be of type Packet.Semantics, not {type(semantics)}')
 
         self.semantics = semantics
 
         layout = {'data': data_shape}
+        if header_shape is not None:
+            layout['header'] = header_shape
         if semantics.has_first:
             layout['first'] = 1
         if semantics.has_last:
@@ -60,3 +63,16 @@ class Packet(data.StructLayout):
             layout['end'] = 1
 
         super().__init__(layout)
+
+        self.data_shape = data_shape
+        self.header_shape = header_shape
+
+    @property
+    def h(self):
+        '''Shorthand for `.header`.'''
+        return self.header
+
+    @property
+    def d(self):
+        '''Shorthand for `.data`.'''
+        return self.data
