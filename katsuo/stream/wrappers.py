@@ -14,14 +14,14 @@ class SyncFIFOBuffered(wiring.Component):
         depth: Depth of the FIFO.
 
     Attributes:
-        input (stream): Input stream.
-        output (stream): Output stream.
+        i (stream): Input stream.
+        o (stream): Output stream.
     '''
 
     def __init__(self, *, shape: ShapeLike, depth: int):
         super().__init__({
-            'input': wiring.In(stream.Signature(shape)),
-            'output': wiring.Out(stream.Signature(shape)),
+            'i': wiring.In(stream.Signature(shape)),
+            'o': wiring.Out(stream.Signature(shape)),
         })
         self.shape = shape
         self.depth = depth
@@ -33,14 +33,14 @@ class SyncFIFOBuffered(wiring.Component):
 
         m.d.comb += [
             # Input
-            self.input.ready.eq(self.fifo.w_rdy),
-            self.fifo.w_en.eq(self.input.valid),
-            self.fifo.w_data.eq(self.input.payload),
+            self.i.ready.eq(self.fifo.w_rdy),
+            self.fifo.w_en.eq(self.i.valid),
+            self.fifo.w_data.eq(self.i.payload),
 
             # Output
-            self.output.valid.eq(self.fifo.r_rdy),
-            self.output.payload.eq(self.fifo.r_data),
-            self.fifo.r_en.eq(self.output.ready),
+            self.o.valid.eq(self.fifo.r_rdy),
+            self.o.payload.eq(self.fifo.r_data),
+            self.fifo.r_en.eq(self.o.ready),
         ]
 
         return m
@@ -53,14 +53,14 @@ class AsyncFIFOBuffered(wiring.Component):
         depth: Depth of the FIFO.
 
     Attributes:
-        input (stream): Input stream.
-        output (stream): Output stream.
+        i (stream): Input stream.
+        o (stream): Output stream.
     '''
 
     def __init__(self, *, shape: ShapeLike, depth: int):
         super().__init__({
-            'input': wiring.In(stream.Signature(shape)),
-            'output': wiring.Out(stream.Signature(shape)),
+            'i': wiring.In(stream.Signature(shape)),
+            'o': wiring.Out(stream.Signature(shape)),
         })
         self.shape = shape
         self.depth = depth
@@ -72,14 +72,14 @@ class AsyncFIFOBuffered(wiring.Component):
 
         m.d.comb += [
             # Input
-            self.input.ready.eq(self.fifo.w_rdy),
-            self.fifo.w_en.eq(self.input.valid),
-            self.fifo.w_data.eq(self.input.payload),
+            self.i.ready.eq(self.fifo.w_rdy),
+            self.fifo.w_en.eq(self.i.valid),
+            self.fifo.w_data.eq(self.i.payload),
 
             # Output
-            self.output.valid.eq(self.fifo.r_rdy),
-            self.output.payload.eq(self.fifo.r_data),
-            self.fifo.r_en.eq(self.output.ready),
+            self.o.valid.eq(self.fifo.r_rdy),
+            self.o.payload.eq(self.fifo.r_data),
+            self.fifo.r_en.eq(self.o.ready),
         ]
 
         return m

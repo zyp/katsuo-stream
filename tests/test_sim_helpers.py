@@ -18,12 +18,12 @@ def test_put_get():
         await ctx.tick()
 
         for payload in payloads:
-            await stream_put(ctx, dut.input, payload)
+            await stream_put(ctx, dut.i, payload)
 
     @sim.add_testbench
     async def output_testbench(ctx: SimulatorContext):
         for expected in payloads:
-            assert await stream_get(ctx, dut.output) == expected
+            assert await stream_get(ctx, dut.o) == expected
 
     @sim.add_process
     async def timeout(ctx: SimulatorContext):
@@ -53,16 +53,16 @@ def test_send_recv_packet(semantics):
         await ctx.tick()
 
         for payload in payloads:
-            await send_packet(ctx, dut.input, payload)
+            await send_packet(ctx, dut.i, payload)
 
             if semantics == Packet.Semantics.FIRST_LAST:
                 # With first and last semantics, we can send extra tokens between packets that will be dropped upon reception of the first token of the next packet.
-                await stream_put(ctx, dut.input, {'data': 100})
+                await stream_put(ctx, dut.i, {'data': 100})
 
     @sim.add_testbench
     async def output_testbench(ctx: SimulatorContext):
         for expected in payloads:
-            assert await recv_packet(ctx, dut.output) == expected
+            assert await recv_packet(ctx, dut.o) == expected
 
     @sim.add_process
     async def timeout(ctx: SimulatorContext):

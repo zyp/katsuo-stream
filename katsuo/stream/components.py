@@ -14,16 +14,16 @@ class Serializer(wiring.Component):
         shape: Shape of the input stream.
 
     Attributes:
-        input (stream): Input stream with an array payload.
-        output (stream): Output stream of individual elements.
+        i (stream): Input stream with an array payload.
+        o (stream): Output stream of individual elements.
     '''
 
     def __init__(self, shape: data.ArrayLayout):
         assert isinstance(shape, data.ArrayLayout)
 
         super().__init__({
-            'input': wiring.In(stream.Signature(shape)),
-            'output': wiring.Out(stream.Signature(shape.elem_shape)),
+            'i': wiring.In(stream.Signature(shape)),
+            'o': wiring.Out(stream.Signature(shape.elem_shape)),
         })
 
         self.shape = shape
@@ -34,12 +34,12 @@ class Serializer(wiring.Component):
         idx = Signal(range(self.shape.length))
 
         m.d.comb += [
-            self.input.ready.eq(self.output.ready & (idx == self.shape.length - 1)),
-            self.output.valid.eq(self.input.valid),
-            self.output.payload.eq(self.input.payload[idx]),
+            self.i.ready.eq(self.o.ready & (idx == self.shape.length - 1)),
+            self.o.valid.eq(self.i.valid),
+            self.o.payload.eq(self.i.payload[idx]),
         ]
 
-        with m.If(self.output.valid & self.output.ready):
+        with m.If(self.o.valid & self.o.ready):
             m.d.sync += idx.eq(idx + 1)
 
             with m.If(idx == self.shape.length - 1):

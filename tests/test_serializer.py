@@ -20,12 +20,12 @@ def test_serializer():
         ]
 
         for payload in payloads:
-            await stream_put(ctx, dut.input, payload)
+            await stream_put(ctx, dut.i, payload)
 
     @sim.add_testbench
     async def output_testbench(ctx: SimulatorContext):
         for expected in [1, 2, 3, 4, 5, 6]:
-            assert await stream_get(ctx, dut.output) == expected
+            assert await stream_get(ctx, dut.o) == expected
 
     @sim.add_process
     async def timeout(ctx: SimulatorContext):
