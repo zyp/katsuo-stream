@@ -49,7 +49,7 @@ async def stream_get(ctx: SimulatorContext, stream: stream.Interface, *, domain 
     ctx.set(stream.ready, 0)
     return payload
 
-async def send_packet(ctx: SimulatorContext, stream: stream.Interface, packet: Iterable[Any], *, domain = 'sync', context = None):
+async def send_packet(ctx: SimulatorContext, stream: stream.Interface, packet: Iterable[Any], *, domain = 'sync', context = None, omit_start = False, omit_end = False):
     '''Send a packet to a packetized stream.
 
     Args:
@@ -58,6 +58,8 @@ async def send_packet(ctx: SimulatorContext, stream: stream.Interface, packet: I
         packet: Packet contents.
         domain: Clock domain.
         context: Context for looking up the clock domain.
+        omit_start: Omit the start of packet indicator (FIRST).
+        omit_end: Omit the end of packet indicator (LAST/END).
     '''
 
     shape = stream.payload.shape()
@@ -69,15 +71,15 @@ async def send_packet(ctx: SimulatorContext, stream: stream.Interface, packet: I
     for i, e in enumerate(packet):
         ctx.set(stream.payload.data, e)
         if shape.semantics.has_first:
-            ctx.set(stream.payload.first, i == 0)
+            ctx.set(stream.payload.first, i == 0 and not omit_start)
         if shape.semantics.has_last:
-            ctx.set(stream.payload.last, i == len(packet) - 1)
+            ctx.set(stream.payload.last, i == len(packet) - 1 and not omit_end)
         if shape.semantics.has_end:
             ctx.set(stream.payload.end, 0)
 
         await ctx.tick(domain = domain, context = context).until(stream.ready == 1)
 
-    if shape.semantics.has_end:
+    if shape.semantics.has_end and not omit_end:
         ctx.set(stream.payload.end, 1)
         await ctx.tick(domain = domain, context = context).until(stream.ready == 1)
         ctx.set(stream.payload.end, 0)
