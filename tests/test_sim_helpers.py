@@ -32,7 +32,7 @@ def test_put_get():
 
     sim.run()
 
-@pytest.mark.parametrize('semantics', [s for s in Packet.Semantics if s != Packet.Semantics.FIRST])
+@pytest.mark.parametrize('semantics', Packet.Semantics)
 def test_send_recv_packet(semantics):
     dut = SyncFIFOBuffered(shape = Packet(semantics = semantics), depth = 1)
 

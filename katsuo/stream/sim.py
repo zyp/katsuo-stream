@@ -87,10 +87,6 @@ async def send_packet(ctx: SimulatorContext, stream: stream.Interface, packet: I
 async def recv_packet(ctx: SimulatorContext, stream: stream.Interface, *, domain = 'sync', context = None) -> list[Any]:
     '''Receive a packet from a packetized stream.
 
-    Note:
-        Does not support streams with FIRST semantics, as we can't tell the end of the current packet before receiving
-        the first token of the next packet, and we have nowhere to store that token until the next `recv_packet()` call.
-
     Args:
         ctx: Simulator context.
         stream: Target stream.
@@ -104,8 +100,6 @@ async def recv_packet(ctx: SimulatorContext, stream: stream.Interface, *, domain
     shape = stream.payload.shape()
     if not isinstance(shape, Packet):
         raise TypeError('recv_packet() can only be used on streams with Packet payloads')
-    if shape.semantics == Packet.Semantics.FIRST:
-        raise TypeError('recv_packet() does not support FIRST semantics')
 
     buf = []
 
