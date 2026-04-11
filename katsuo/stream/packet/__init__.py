@@ -5,7 +5,7 @@ from amaranth.lib import data
 
 import enum
 
-__all__ = ['Packet']
+__all__ = ['Packet', 'PacketQueue']
 
 class Packet(data.StructLayout):
     '''Payload shape for a packetized data stream.
@@ -76,3 +76,5 @@ class Packet(data.StructLayout):
     def d(self):
         '''Shorthand for `.data`.'''
         return self.data
+
+from .queue import PacketQueue
