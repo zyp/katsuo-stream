@@ -67,6 +67,12 @@ class Packet(data.StructLayout):
         self.data_shape = data_shape
         self.header_shape = header_shape
 
+    def __call__(self, value):
+        return PacketView(self, value)
+
+class PacketView(data.View):
+    '''View of a packetized data stream payload.'''
+
     @property
     def h(self):
         '''Shorthand for `.header`.'''
