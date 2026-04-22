@@ -16,6 +16,9 @@ dynamic = ["version"]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
+[tool.pdm.build]
+includes = ["katsuo/"]
+
 [tool.pdm.version]
 source = "scm"
 
